@@ -28,13 +28,14 @@ LDFLAGS      += $(ROOTLDFLAGS) $(ROOTGLIBS) ${ROOTLIBS}
 #CXXFLAGS     += $(GENFITCFLAGS)
 #LDFLAGS      += $(GENFITLDFLAGS)
 
-CXXFLAGS	+=	-I$(MY_INSTALL)/include
-LDFLAGS		+=	-L$(MY_INSTALL)/lib -lgenfit2exp -lPHGenFit  \
-  -lphfield
+#CXXFLAGS += -I$(MYINSTALL)/include
+#LDFLAGS  += -L$(MYINSTALL)/lib -L$(MYINSTALL)/lib64 \
+#            -lPHGenFit -lgenfit2exp -lgenfit2 -lphfield
 
-CXXFLAGS	+=	-I$(OFFLINE_MAIN)/include
-LDFLAGS		+=	-L$(OFFLINE_MAIN)/lib -lgenfit2exp -lPHGenFit \
-  -lphfield
+CXXFLAGS += -I$(OFFLINE_MAIN)/include
+LDFLAGS  += -L$(OFFLINE_MAIN)/lib -L$(OFFLINE_MAIN)/lib64 \
+            -lPHGenFit -lgenfit2exp -lgenfit2 -lphfield
+
 
 TESTO         = testPHGenFit.o
 TEST	        = testPHGenFit

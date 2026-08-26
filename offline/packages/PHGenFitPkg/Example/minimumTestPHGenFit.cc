@@ -15,6 +15,7 @@
 #include <GenFit/AbsTrackRep.h>
 #include <GenFit/RKTrackRep.h>
 #include <GenFit/StateOnPlane.h>
+#include <GenFit/Track.h>
 
 // PHGenFit
 #include <phgenfit/Fitter.h>
@@ -27,11 +28,31 @@
 
 #define LogDEBUG std::cout << "DEBUG: " << __LINE__ << "\n"
 
-void get_seed(TVector3& seed_pos, TVector3& seed_mom, TMatrixDSym& seed_cov)
+//void get_seed(TVector3& seed_pos, TVector3& seed_mom, TMatrixDSym& seed_cov)
+//{
+//  seed_pos.SetXYZ(0.01, 0.01, 0.01);
+//  seed_mom.SetXYZ(10, -5, 0);
+//  seed_cov.ResizeTo(6, 6);
+//}
+
+void get_seed(
+    TVector3& seed_pos,
+    TVector3& seed_mom,
+    TMatrixDSym& seed_cov)
 {
-  seed_pos.SetXYZ(0, 0, 0);
-  seed_mom.SetXYZ(10, -5, 0);
+  seed_pos.SetXYZ(35., 0., -2.5);
+  seed_mom.SetXYZ(10., -5., 0.);
+
   seed_cov.ResizeTo(6, 6);
+  seed_cov.Zero();
+
+  seed_cov(0, 0) = 0.1 * 0.1;
+  seed_cov(1, 1) = 0.1 * 0.1;
+  seed_cov(2, 2) = 0.1 * 0.1;
+
+  seed_cov(3, 3) = 1.0 * 1.0;
+  seed_cov(4, 4) = 1.0 * 1.0;
+  seed_cov(5, 5) = 1.0 * 1.0;
 }
 
 std::vector<TVector3> get_raw_measurements()
@@ -76,12 +97,30 @@ int main(int /*argc*/, char** /*argv*/)
     measurements.push_back(meas);
   }
 
+  /*
   //! Add measurements to track
   track->addMeasurements(measurements);
 
   //! Fit the track
   fitter->processTrack(track, false);
+  */
+  
+  std::cout << "BEFORE addMeasurements" << std::endl;
+  track->addMeasurements(measurements);
+  std::cout << "AFTER addMeasurements" << std::endl;
+  
+  std::cout << "BEFORE processTrack" << std::endl;
 
+  genfit::Track* gftrack = track->getGenFitTrack();
+  
+  std::cout << "BEFORE checkConsistency" << std::endl;
+  gftrack->checkConsistency();
+  std::cout << "AFTER checkConsistency" << std::endl;
+  
+  std::cout << "BEFORE processTrack" << std::endl;
+  const int fit_result = fitter->processTrack(track, false);
+  std::cout << "AFTER processTrack, result = " << fit_result << std::endl;
+ 
   //! Extrapolate to beam line
   // genfit::MeasuredStateOnPlane* state = track->extrapolateToLine(TVector3(0, 0, 0), TVector3(0, 0, 1));
   // genfit::MeasuredStateOnPlane* state = track->extrapolateToPoint(TVector3(0, 0, 0));

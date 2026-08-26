@@ -94,7 +94,7 @@ namespace PHGenFit
       _fitter = new genfit::KalmanFitter();
     }
 
-    genfit::Exception::quiet(true);
+    genfit::Exception::quiet(false);
   }
 
   Fitter::~Fitter()
